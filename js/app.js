@@ -63,12 +63,29 @@ document.addEventListener('DOMContentLoaded', () => {
         card.onclick = () => navigateToPlayer(song.id);
 
         const levelName = translations.getLevelName(song.level);
+        
+        // Determine level badge color
+        let levelColor = '';
+        switch(song.level) {
+            case 'beginner':
+                levelColor = 'background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: white;';
+                break;
+            case 'intermediate':
+                levelColor = 'background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: white;';
+                break;
+            case 'advanced':
+                levelColor = 'background: linear-gradient(135deg, #f87171 0%, #ef4444 100%); color: white;';
+                break;
+        }
 
         card.innerHTML = `
-            <h3>${song.title}</h3>
-            <p class="song-artist">${song.artist}</p>
-            <p class="song-year">${song.year}</p>
-            <p class="level-badge">${levelName}</p>
+            ${song.cover ? `<div class="song-cover" style="background-image: url('${song.cover}');"></div>` : ''}
+            <div class="song-info">
+                <h3>${song.title}</h3>
+                <p class="song-artist">${song.artist}</p>
+                <p class="song-year">${song.year}</p>
+                <p class="level-badge" style="${levelColor}">${levelName}</p>
+            </div>
         `;
 
         return card;
