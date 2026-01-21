@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karakov - Opi suomea musiikin kautta / Learn Finnish through Music</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="language-toggle">
+        <button id="langToggle" data-lang="fi">EN</button>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1 class="main-title" data-fi="Karakov" data-en="Karakov">Karakov</h1>
+            <p class="subtitle" data-fi="Opi suomea musiikin kautta" data-en="Learn Finnish through Music">Opi suomea musiikin kautta</p>
+        </header>
+
+        <main>
+            <section class="level-selection">
+                <h2 data-fi="Valitse tasosi" data-en="Choose your level">Valitse tasosi</h2>
+                <div class="level-buttons">
+                    <button class="level-btn" data-level="beginner">
+                        <span data-fi="Aloittelija" data-en="Beginner">Aloittelija</span>
+                    </button>
+                    <button class="level-btn" data-level="intermediate">
+                        <span data-fi="Keskitaso" data-en="Intermediate">Keskitaso</span>
+                    </button>
+                    <button class="level-btn" data-level="advanced">
+                        <span data-fi="Edistynyt" data-en="Advanced">Edistynyt</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="random-selection">
+                <button id="randomBtn" class="random-btn">
+                    <span data-fi="🎲 Satunnainen kappale" data-en="🎲 Random Song">🎲 Satunnainen kappale</span>
+                </button>
+            </section>
+
+            <section class="song-list" id="songList" style="display: none;">
+                <h2 data-fi="Valitse kappale" data-en="Choose a song">Valitse kappale</h2>
+                <div id="songsContainer"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/translations.js"></script>
+    <script src="js/songs.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

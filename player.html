@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karakov Player</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/player.css">
+</head>
+<body>
+    <div class="language-toggle">
+        <button id="langToggle" data-lang="fi">EN</button>
+    </div>
+
+    <div class="container player-container">
+        <header>
+            <a href="index.html" class="back-btn" data-fi="← Takaisin" data-en="← Back">← Takaisin</a>
+            <h1 id="songTitle"></h1>
+            <p id="artistName"></p>
+        </header>
+
+        <main>
+            <section class="player-section">
+                <div class="audio-player">
+                    <audio id="audioPlayer" controls>
+                        <source id="audioSource" src="" type="audio/mpeg">
+                        <span data-fi="Selaimesi ei tue audio-elementtiä." data-en="Your browser does not support the audio element.">Selaimesi ei tue audio-elementtiä.</span>
+                    </audio>
+                </div>
+
+                <div class="player-info">
+                    <p class="level-badge" id="levelBadge"></p>
+                </div>
+            </section>
+
+            <section class="lyrics-section">
+                <h2 data-fi="Sanat" data-en="Lyrics">Sanat</h2>
+                <div class="lyrics-toggle">
+                    <button id="translationToggle" class="toggle-btn">
+                        <span data-fi="Näytä englanti" data-en="Show English">Näytä englanti</span>
+                    </button>
+                </div>
+                <div id="lyricsContainer" class="lyrics-container">
+                    <!-- Lyrics will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <section class="instructions">
+                <h3 data-fi="Miten käyttää" data-en="How to use">Miten käyttää</h3>
+                <ul>
+                    <li data-fi="Paina play aloittaaksesi musiikin" data-en="Press play to start the music">Paina play aloittaaksesi musiikin</li>
+                    <li data-fi="Seuraa sanoja samalla kun kuuntelet" data-en="Follow the lyrics while listening">Seuraa sanoja samalla kun kuuntelet</li>
+                    <li data-fi="Laula mukana karaoken tapaan!" data-en="Sing along karaoke-style!">Laula mukana karaoken tapaan!</li>
+                    <li data-fi="Käytä käännöstä apuna tarvittaessa" data-en="Use translations for help when needed">Käytä käännöstä apuna tarvittaessa</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/translations.js"></script>
+    <script src="js/songs.js"></script>
+    <script src="js/player.js"></script>
+</body>
+</html>

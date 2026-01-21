@@ -1,0 +1,20 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node modules (if needed in future)
+node_modules/
+
+# Audio files (too large for git)
+assets/audio/*.mp3
+assets/audio/*.wav
+
+# Keep the README in audio folder
+!assets/audio/README.txt
