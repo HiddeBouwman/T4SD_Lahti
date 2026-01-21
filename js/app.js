@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const levelButtons = document.querySelectorAll('.level-btn');
     const randomBtn = document.getElementById('randomBtn');
+    const searchInput = document.getElementById('searchInput');
     const songList = document.getElementById('songList');
     const songsContainer = document.getElementById('songsContainer');
 
@@ -19,18 +20,40 @@ document.addEventListener('DOMContentLoaded', () => {
         navigateToPlayer(randomSong.id);
     });
 
+    // Handle search input
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+        const songs = searchSongs(query);
+        displaySongs(songs);
+        if (query && songs.length > 0) {
+            songList.style.display = 'block';
+            songList.scrollIntoView({ behavior: 'smooth' });
+        } else if (!query) {
+            songList.style.display = 'none';
+        }
+    });
+
     // Display songs by level
     function showSongsByLevel(level) {
         const songs = getSongsByLevel(level);
+        displaySongs(songs);
+        songList.style.display = 'block';
+        songList.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Display songs in container
+    function displaySongs(songs) {
         songsContainer.innerHTML = '';
+
+        if (songs.length === 0) {
+            songsContainer.innerHTML = '<p style="text-align:center;color:#666;">No songs found</p>';
+            return;
+        }
 
         songs.forEach(song => {
             const songCard = createSongCard(song);
             songsContainer.appendChild(songCard);
         });
-
-        songList.style.display = 'block';
-        songList.scrollIntoView({ behavior: 'smooth' });
     }
 
     // Create song card element
@@ -43,7 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         card.innerHTML = `
             <h3>${song.title}</h3>
-            <p>${song.artist}</p>
+            <p class="song-artist">${song.artist}</p>
+            <p class="song-year">${song.year}</p>
             <p class="level-badge">${levelName}</p>
         `;
 

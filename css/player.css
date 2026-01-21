@@ -116,6 +116,28 @@
     margin-bottom: 5px;
 }
 
+.lyric-translation {
+    color: #666;
+    font-style: italic;
+    display: none;
+    direction: ltr;
+}
+
+.lyric-translation.show {
+    display: block;
+}
+
+/* RTL support for Arabic */
+body[dir="rtl"] .lyric-translation {
+    direction: rtl;
+    text-align: right;
+}
+
+body[dir="rtl"] .lyric-finnish {
+    direction: ltr;
+    text-align: left;
+}
+
 .lyric-english {
     color: #666;
     font-style: italic;

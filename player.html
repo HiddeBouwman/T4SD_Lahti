@@ -9,12 +9,19 @@
 </head>
 <body>
     <div class="language-toggle">
-        <button id="langToggle" data-lang="fi">EN</button>
+        <select id="langSelector" class="lang-selector">
+            <option value="fi">Suomi (FI)</option>
+            <option value="en">English (EN)</option>
+            <option value="es">Español (ES)</option>
+            <option value="fr">Français (FR)</option>
+            <option value="ar">العربية (AR)</option>
+            <option value="nl">Nederlands (NL)</option>
+        </select>
     </div>
 
     <div class="container player-container">
         <header>
-            <a href="index.html" class="back-btn" data-fi="← Takaisin" data-en="← Back">← Takaisin</a>
+            <a href="index.html" class="back-btn" data-fi="← Takaisin" data-en="← Back" data-es="← Volver" data-fr="← Retour" data-ar="← رجوع" data-nl="← Terug">← Takaisin</a>
             <h1 id="songTitle"></h1>
             <p id="artistName"></p>
         </header>
@@ -24,7 +31,7 @@
                 <div class="audio-player">
                     <audio id="audioPlayer" controls>
                         <source id="audioSource" src="" type="audio/mpeg">
-                        <span data-fi="Selaimesi ei tue audio-elementtiä." data-en="Your browser does not support the audio element.">Selaimesi ei tue audio-elementtiä.</span>
+                        <span data-fi="Selaimesi ei tue audio-elementtiä." data-en="Your browser does not support the audio element." data-es="Tu navegador no soporta el elemento de audio." data-fr="Votre navigateur ne supporte pas l'élément audio." data-ar="متصفحك لا يدعم عنصر الصوت." data-nl="Je browser ondersteunt het audio-element niet.">Selaimesi ei tue audio-elementtiä.</span>
                     </audio>
                 </div>
 
@@ -34,10 +41,10 @@
             </section>
 
             <section class="lyrics-section">
-                <h2 data-fi="Sanat" data-en="Lyrics">Sanat</h2>
+                <h2 data-fi="Sanat" data-en="Lyrics" data-es="Letras" data-fr="Paroles" data-ar="كلمات الأغنية" data-nl="Teksten">Sanat</h2>
                 <div class="lyrics-toggle">
                     <button id="translationToggle" class="toggle-btn">
-                        <span data-fi="Näytä englanti" data-en="Show English">Näytä englanti</span>
+                        <span data-fi="Näytä käännös" data-en="Show translation" data-es="Mostrar traducción" data-fr="Afficher traduction" data-ar="عرض الترجمة" data-nl="Toon vertaling">Näytä käännös</span>
                     </button>
                 </div>
                 <div id="lyricsContainer" class="lyrics-container">
@@ -46,12 +53,12 @@
             </section>
 
             <section class="instructions">
-                <h3 data-fi="Miten käyttää" data-en="How to use">Miten käyttää</h3>
+                <h3 data-fi="Miten käyttää" data-en="How to use" data-es="Cómo usar" data-fr="Comment utiliser" data-ar="كيفية الاستخدام" data-nl="Hoe te gebruiken">Miten käyttää</h3>
                 <ul>
-                    <li data-fi="Paina play aloittaaksesi musiikin" data-en="Press play to start the music">Paina play aloittaaksesi musiikin</li>
-                    <li data-fi="Seuraa sanoja samalla kun kuuntelet" data-en="Follow the lyrics while listening">Seuraa sanoja samalla kun kuuntelet</li>
-                    <li data-fi="Laula mukana karaoken tapaan!" data-en="Sing along karaoke-style!">Laula mukana karaoken tapaan!</li>
-                    <li data-fi="Käytä käännöstä apuna tarvittaessa" data-en="Use translations for help when needed">Käytä käännöstä apuna tarvittaessa</li>
+                    <li data-fi="Paina play aloittaaksesi musiikin" data-en="Press play to start the music" data-es="Presiona play para comenzar la música" data-fr="Appuyez sur play pour démarrer la musique" data-ar="اضغط تشغيل لبدء الموسيقى" data-nl="Druk op play om de muziek te starten">Paina play aloittaaksesi musiikin</li>
+                    <li data-fi="Seuraa sanoja samalla kun kuuntelet" data-en="Follow the lyrics while listening" data-es="Sigue las letras mientras escuchas" data-fr="Suivez les paroles en écoutant" data-ar="تابع كلمات الأغنية أثناء الاستماع" data-nl="Volg de teksten tijdens het luisteren">Seuraa sanoja samalla kun kuuntelet</li>
+                    <li data-fi="Laula mukana karaoken tapaan!" data-en="Sing along karaoke-style!" data-es="¡Canta al estilo karaoke!" data-fr="Chantez en mode karaoké !" data-ar="غنِ بأسلوب الكاريوكي!" data-nl="Zing mee in karaoke-stijl!">Laula mukana karaoken tapaan!</li>
+                    <li data-fi="Käytä käännöstä apuna tarvittaessa" data-en="Use translations for help when needed" data-es="Usa las traducciones cuando lo necesites" data-fr="Utilisez les traductions si nécessaire" data-ar="استخدم الترجمة عند الحاجة" data-nl="Gebruik vertalingen als hulp indien nodig">Käytä käännöstä apuna tarvittaessa</li>
                 </ul>
             </section>
         </main>

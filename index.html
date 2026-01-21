@@ -8,39 +8,51 @@
 </head>
 <body>
     <div class="language-toggle">
-        <button id="langToggle" data-lang="fi">EN</button>
+        <select id="langSelector" class="lang-selector">
+            <option value="fi">Suomi (FI)</option>
+            <option value="en">English (EN)</option>
+            <option value="es">Español (ES)</option>
+            <option value="fr">Français (FR)</option>
+            <option value="ar">العربية (AR)</option>
+            <option value="nl">Nederlands (NL)</option>
+        </select>
     </div>
 
     <div class="container">
         <header>
             <h1 class="main-title" data-fi="Karakov" data-en="Karakov">Karakov</h1>
-            <p class="subtitle" data-fi="Opi suomea musiikin kautta" data-en="Learn Finnish through Music">Opi suomea musiikin kautta</p>
+            <p class="subtitle" data-fi="Opi suomea musiikin kautta" data-en="Learn Finnish through Music" data-es="Aprende finés a través de la música" data-fr="Apprenez le finnois par la musique" data-ar="تعلم الفنلندية من خلال الموسيقى" data-nl="Leer Fins door muziek">Opi suomea musiikin kautta</p>
         </header>
 
         <main>
             <section class="level-selection">
-                <h2 data-fi="Valitse tasosi" data-en="Choose your level">Valitse tasosi</h2>
+                <h2 data-fi="Valitse tasosi" data-en="Choose your level" data-es="Elige tu nivel" data-fr="Choisissez votre niveau" data-ar="اختر مستواك" data-nl="Kies je niveau">Valitse tasosi</h2>
                 <div class="level-buttons">
                     <button class="level-btn" data-level="beginner">
-                        <span data-fi="Aloittelija" data-en="Beginner">Aloittelija</span>
+                        <span data-fi="Aloittelija" data-en="Beginner" data-es="Principiante" data-fr="Débutant" data-ar="مبتدئ" data-nl="Beginner">Aloittelija</span>
                     </button>
                     <button class="level-btn" data-level="intermediate">
-                        <span data-fi="Keskitaso" data-en="Intermediate">Keskitaso</span>
+                        <span data-fi="Keskitaso" data-en="Intermediate" data-es="Intermedio" data-fr="Intermédiaire" data-ar="متوسط" data-nl="Gemiddeld">Keskitaso</span>
                     </button>
                     <button class="level-btn" data-level="advanced">
-                        <span data-fi="Edistynyt" data-en="Advanced">Edistynyt</span>
+                        <span data-fi="Edistynyt" data-en="Advanced" data-es="Avanzado" data-fr="Avancé" data-ar="متقدم" data-nl="Gevorderd">Edistynyt</span>
                     </button>
                 </div>
             </section>
 
             <section class="random-selection">
                 <button id="randomBtn" class="random-btn">
-                    <span data-fi="🎲 Satunnainen kappale" data-en="🎲 Random Song">🎲 Satunnainen kappale</span>
+                    <span data-fi="🎲 Satunnainen kappale" data-en="🎲 Random Song" data-es="🎲 Canción aleatoria" data-fr="🎲 Chanson aléatoire" data-ar="🎲 أغنية عشوائية" data-nl="🎲 Willekeurig nummer">🎲 Satunnainen kappale</span>
                 </button>
             </section>
 
+            <section class="search-section">
+                <h2 data-fi="Etsi kappaleita" data-en="Search songs" data-es="Buscar canciones" data-fr="Rechercher des chansons" data-ar="البحث عن الأغاني" data-nl="Zoek liedjes">Etsi kappaleita</h2>
+                <input type="text" id="searchInput" class="search-input" placeholder="Hae kappaleen nimellä, artistilla..." data-fi="Hae kappaleen nimellä, artistilla..." data-en="Search by song name, artist..." data-es="Buscar por nombre de canción, artista..." data-fr="Rechercher par nom de chanson, artiste..." data-ar="البحث باسم الأغنية أو الفنان..." data-nl="Zoek op nummer, artiest...">
+            </section>
+
             <section class="song-list" id="songList" style="display: none;">
-                <h2 data-fi="Valitse kappale" data-en="Choose a song">Valitse kappale</h2>
+                <h2 data-fi="Valitse kappale" data-en="Choose a song" data-es="Elige una canción" data-fr="Choisissez une chanson" data-ar="اختر أغنية" data-nl="Kies een nummer">Valitse kappale</h2>
                 <div id="songsContainer"></div>
             </section>
         </main>

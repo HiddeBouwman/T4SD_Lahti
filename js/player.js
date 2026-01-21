@@ -1,4 +1,6 @@
 // Player page logic
+let currentSong = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const songId = urlParams.get('song');
@@ -15,7 +17,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    currentSong = song;
     initializePlayer(song);
+    
+    // Listen for language changes
+    const langSelector = document.getElementById('langSelector');
+    if (langSelector) {
+        langSelector.addEventListener('change', () => {
+            // Wait a bit for translations to update, then reload lyrics
+            setTimeout(() => {
+                if (currentSong) {
+                    displayLyrics(currentSong.lyrics);
+                }
+            }, 100);
+        });
+    }
 });
 
 function initializePlayer(song) {
@@ -55,12 +71,41 @@ function displayLyrics(lyrics) {
         finnishLine.className = 'lyric-finnish';
         finnishLine.textContent = lyric.finnish;
 
-        const englishLine = document.createElement('div');
-        englishLine.className = 'lyric-english';
-        englishLine.textContent = lyric.english;
+        const translationLine = document.createElement('div');
+        translationLine.className = 'lyric-translation';
+        
+        // Get translation based on current language
+        const currentLang = translations.currentLang;
+        let translationText = '';
+        
+        // Try to get translation in the selected language, fallback to English
+        if (currentLang === 'fi') {
+            translationText = lyric.english || ''; // For Finnish, show English as translation
+        } else if (currentLang === 'es') {
+            translationText = lyric.spanish || lyric.english || '';
+        } else if (currentLang === 'fr') {
+            translationText = lyric.french || lyric.english || '';
+        } else if (currentLang === 'ar') {
+            translationText = lyric.arabic || lyric.english || '';
+        } else if (currentLang === 'nl') {
+            translationText = lyric.dutch || lyric.english || '';
+        } else {
+            translationText = lyric.english || '';
+        }
+        
+        translationLine.textContent = translationText;
+        
+        // Set direction for RTL languages
+        if (currentLang === 'ar') {
+            translationLine.style.direction = 'rtl';
+            translationLine.style.textAlign = 'right';
+        } else {
+            translationLine.style.direction = 'ltr';
+            translationLine.style.textAlign = 'left';
+        }
 
         lineDiv.appendChild(finnishLine);
-        lineDiv.appendChild(englishLine);
+        lineDiv.appendChild(translationLine);
         lyricsContainer.appendChild(lineDiv);
     });
 }
@@ -71,9 +116,9 @@ function setupTranslationToggle() {
 
     toggleBtn.addEventListener('click', () => {
         showTranslations = !showTranslations;
-        const englishLines = document.querySelectorAll('.lyric-english');
+        const translationLines = document.querySelectorAll('.lyric-translation');
         
-        englishLines.forEach(line => {
+        translationLines.forEach(line => {
             if (showTranslations) {
                 line.classList.add('show');
             } else {
@@ -81,30 +126,53 @@ function setupTranslationToggle() {
             }
         });
 
-        // Update button text
+        // Update button text based on language
         const btnText = toggleBtn.querySelector('span');
-        if (translations.currentLang === 'fi') {
-            btnText.dataset.fi = showTranslations ? 'Piilota englanti' : 'Näytä englanti';
+        const currentLang = translations.currentLang;
+        
+        if (showTranslations) {
+            btnText.dataset.fi = 'Piilota käännös';
+            btnText.dataset.en = 'Hide translation';
+            btnText.dataset.es = 'Ocultar traducción';
+            btnText.dataset.fr = 'Masquer traduction';
+            btnText.dataset.ar = 'إخفاء الترجمة';
         } else {
-            btnText.dataset.en = showTranslations ? 'Hide English' : 'Show English';
+            btnText.dataset.fi = 'Näytä käännös';
+            btnText.dataset.en = 'Show translation';
+            btnText.dataset.es = 'Mostrar traducción';
+            btnText.dataset.fr = 'Afficher traduction';
+            btnText.dataset.ar = 'عرض الترجمة';
         }
         translations.updatePageLanguage();
     });
 }
 
 function setupAudioSync(audioPlayer, lyrics) {
-    // This is a simplified version - for real sync, you'd need timestamp data
     const lyricsContainer = document.getElementById('lyricsContainer');
     const lyricLines = lyricsContainer.querySelectorAll('.lyric-line');
     
     if (lyrics.length === 0) return;
 
+    // Check if lyrics have custom timestamps
+    const hasCustomTime = lyrics[0].time !== undefined;
+
     audioPlayer.addEventListener('timeupdate', () => {
         const currentTime = audioPlayer.currentTime;
-        
-        // Each line changes every 5 seconds for better pacing
-        const secondsPerLine = 5;
-        const currentLineIndex = Math.floor(currentTime / secondsPerLine);
+        let currentLineIndex = -1;
+
+        if (hasCustomTime) {
+            // Use custom timestamps for precise synchronization
+            for (let i = lyrics.length - 1; i >= 0; i--) {
+                if (currentTime >= lyrics[i].time) {
+                    currentLineIndex = i;
+                    break;
+                }
+            }
+        } else {
+            // Fallback to simple timing (5 seconds per line)
+            const secondsPerLine = 5;
+            currentLineIndex = Math.floor(currentTime / secondsPerLine);
+        }
 
         // Remove active class from all lines
         lyricLines.forEach(line => line.classList.remove('active'));
