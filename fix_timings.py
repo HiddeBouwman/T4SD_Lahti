@@ -1,32 +1,79 @@
 import re
 import json
 
-# Durations for each song (in seconds) - estimated from Bensound tracks
-SONG_DURATIONS = {
-    1: 140,   # Beginner - Sunny
-    2: 140,   # Beginner - Happiness
-    3: 210,   # Intermediate - Memories
-    4: 210,   # Intermediate - November
-    5: 255,   # Advanced - Inspire (51 lines)
-    6: 260,   # Advanced - Dreams (53 lines)
-    7: 140,   # Beginner - Jazzy Frenchy
-    8: 210,   # Intermediate - Better Days
-    9: 260,   # Advanced - The Lounge (53 lines)
-    10: 140,  # Beginner - Acoustic Breeze
-    11: 140,  # Beginner - Ukulele
-    12: 140,  # Beginner - Little Idea
-    13: 210,  # Intermediate - Slow Motion
-    14: 255,  # Advanced - Energy
-    15: 255,  # Advanced - Summer
-    16: 255   # Advanced - Perception
+# Target timing per line for each level (in seconds)
+TARGET_TIMING = {
+    'beginner': 8,      # 8 seconds per line
+    'intermediate': 7,  # 7 seconds per line
+    'advanced': 10      # 10 seconds per line (more complex lyrics need more time)
 }
 
-def count_lyrics_lines(song_text):
-    """Count number of lyric lines in a song"""
-    # Count occurrences of 'time:'
-    return len(re.findall(r'time:\s*\d+', song_text))
+# Music durations for each song (in seconds) - from Bensound
+MUSIC_DURATIONS = {
+    1: 148,   # Bensound Sunny
+    2: 148,   # Bensound Happiness
+    3: 215,   # Bensound Memories
+    4: 215,   # Bensound November
+    5: 260,   # Bensound Inspire
+    6: 265,   # Bensound Dreams
+    7: 148,   # Bensound Jazzy Frenchy
+    8: 215,   # Bensound Better Days
+    9: 265,   # SoundHelix Song 9
+    10: 148,  # Bensound Acoustic Breeze
+    11: 148,  # Bensound Ukulele
+    12: 148,  # Bensound Little Idea
+    13: 215,  # Bensound Slow Motion
+    14: 260,  # Bensound The Lounge
+    15: 260,  # Bensound Energy
+    16: 260   # Bensound Perception
+}
 
-def fix_song_timings(songs_content):
+# Song levels
+SONG_LEVELS = {
+    1: 'beginner', 2: 'beginner', 7: 'beginner', 10: 'beginner', 11: 'beginner', 12: 'beginner',
+    3: 'intermediate', 4: 'intermediate', 8: 'intermediate', 13: 'intermediate',
+    5: 'advanced', 6: 'advanced', 9: 'advanced', 14: 'advanced', 15: 'advanced', 16: 'advanced'
+}
+
+print("Song Timing Analysis:")
+print("=" * 60)
+
+for song_id in sorted(MUSIC_DURATIONS.keys()):
+    duration = MUSIC_DURATIONS[song_id]
+    level = SONG_LEVELS.get(song_id, 'unknown')
+    target_time = TARGET_TIMING.get(level, 7)
+    ideal_lines = int(duration / target_time)
+    
+    print(f"Song {song_id:2d} ({level:12s}): {duration}s music ÷ {target_time}s/line = {ideal_lines} lines")
+
+print("\n" + "=" * 60)
+print("\nRECOMMENDATIONS:")
+print("- Beginner songs (1,2,7,10,11,12): Should have ~18 lines (8s each)")
+print("- Intermediate songs (3,4,8,13): Should have ~30 lines (7s each)")  
+print("- Advanced songs (5,6,9,14,15,16): Should have ~26 lines (10s each)")
+print("\nAdvanced songs currently have 50+ lines - TOO MANY!")
+print("They need to be reduced to ~26 lines for comfortable 10s reading time.")
+
+# Now analyze current state
+print("\n" + "=" * 60)
+print("\nCURRENT STATE IN songs.js:")
+
+with open('js/songs.js', 'r', encoding='utf-8') as f:
+    content = f.read()
+    
+for song_id in sorted(MUSIC_DURATIONS.keys()):
+    # Find lyrics count
+    song_match = re.search(rf'id:\s*{song_id},.*?lyrics:\s*\[(.*?)\]\s*\}}', content, re.DOTALL)
+    if song_match:
+        lyrics = song_match.group(1)
+        current_lines = len(re.findall(r'time:\s*\d+', lyrics))
+        duration = MUSIC_DURATIONS[song_id]
+        actual_time_per_line = duration / current_lines if current_lines > 0 else 0
+        level = SONG_LEVELS.get(song_id, 'unknown')
+        target = TARGET_TIMING.get(level, 7)
+        
+        status = "✅" if abs(actual_time_per_line - target) < 1.5 else "❌"
+        print(f"{status} Song {song_id:2d}: {current_lines} lines, {actual_time_per_line:.1f}s/line (target: {target}s)")
     """Fix all song timings based on duration and number of lines"""
     
     # Split into individual songs
