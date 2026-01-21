@@ -34,6 +34,20 @@
         </div>
     </div>
 
+    <!-- Decorative moving waves (layered SVG) -->
+    <div class="waves" aria-hidden="true">
+        <svg class="waves-svg" viewBox="0 0 1440 800" preserveAspectRatio="none" aria-hidden="true">
+            <!-- deep back layer (extended left/right to avoid edge gaps during motion) -->
+            <path class="wave wave--1" d="M-200,760 C160,700 280,580 520,540 C760,500 980,480 1200,520 C1310,540 1380,580 1640,600 L1640,800 L-200,800 Z"/>
+            <!-- mid-indigo layer (moved up more) -->
+            <path class="wave wave--2" d="M-200,650 C180,590 360,455 600,395 C840,335 1040,315 1260,355 C1360,377 1400,415 1640,435 L1640,800 L-200,800 Z"/>
+            <!-- mid layer (moved up a lot) -->
+            <path class="wave wave--3" d="M-200,565 C120,485 260,305 520,265 C780,225 980,225 1200,265 C1320,285 1380,315 1640,335 L1640,800 L-200,800 Z"/>
+            <!-- front slate layer (moved up the most) -->
+            <path class="wave wave--4" d="M-200,470 C200,430 380,315 600,280 C820,240 1060,220 1280,250 C1360,266 1400,290 1640,300 L1640,800 L-200,800 Z"/>
+        </svg>
+    </div>
+
     <div class="container">
         <header>
             <h1 class="main-title" data-fi="SingFin" data-en="SingFin">SingFin</h1>
@@ -43,7 +57,19 @@
         <main>
             <section class="search-section">
                 <h2 data-fi="Etsi kappaleita" data-en="Search songs" data-es="Buscar canciones" data-fr="Rechercher des chansons" data-ar="البحث عن الأغاني" data-nl="Zoek liedjes">Etsi kappaleita</h2>
-                <input type="text" id="searchInput" class="search-input" placeholder="Hae kappaleen nimellä, artistilla..." data-fi="Hae kappaleen nimellä, artistilla..." data-en="Search by song name, artist..." data-es="Buscar por nombre de canción, artista..." data-fr="Rechercher par nom de chanson, artiste..." data-ar="البحث باسم الأغنية أو الفنان..." data-nl="Zoek op nummer, artiest...">
+                <div class="search-row">
+                    <div class="search-field">
+                        <!-- magnifying icon inside the field -->
+                        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="6"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="search" id="searchInput" class="search-input" placeholder="Hae kappaletta tai artistia..." data-fi="Hae kappaleen nimellä, artistilla..." data-en="Search by song name, artist..." data-es="Buscar por nombre de canción, artista..." data-fr="Rechercher par nom de chanson, artiste..." data-ar="البحث باسم الأغنية أو الفنان..." data-nl="Zoek op nummer, artiest...">
+                    </div>
+                    <button id="randomBtn" class="random-btn">
+                        <span data-fi="Satunnainen kappale" data-en="Random Song">Satunnainen kappale</span>
+                    </button>
+                </div>
             </section>
             <section class="level-selection">
                 <h2 data-fi="Valitse tasosi" data-en="Choose your level" data-es="Elige tu nivel" data-fr="Choisissez votre niveau" data-ar="اختر مستواك" data-nl="Kies je niveau">Valitse tasosi</h2>
@@ -60,11 +86,7 @@
                 </div>
             </section>
 
-            <section class="random-selection">
-                <button id="randomBtn" class="random-btn">
-                    <span data-fi="🎲 Satunnainen kappale" data-en="🎲 Random Song" data-es="🎲 Canción aleatoria" data-fr="🎲 Chanson aléatoire" data-ar="🎲 أغنية عشوائية" data-nl="🎲 Willekeurig nummer">🎲 Satunnainen kappale</span>
-                </button>
-            </section>
+            <!-- random button now lives next to the search input -->
 
 
             <section class="song-list" id="songList" style="display: none;">
