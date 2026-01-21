@@ -3,28 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karakov - Opi suomea musiikin kautta / Learn Finnish through Music</title>
+    <title>SingFin - Opi suomea musiikin kautta / Learn Finnish through Music</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="language-toggle">
-        <select id="langSelector" class="lang-selector">
-            <option value="fi">Suomi (FI)</option>
-            <option value="en">English (EN)</option>
-            <option value="es">Español (ES)</option>
-            <option value="fr">Français (FR)</option>
-            <option value="ar">العربية (AR)</option>
-            <option value="nl">Nederlands (NL)</option>
-        </select>
+        <div class="lang-selector">
+            <!-- Visible icon button -->
+            <button id="langSelectorBtn" class="lang-icon-btn" aria-haspopup="listbox" aria-expanded="false" title="Change language">
+                <!-- language translate icon (stroke uses currentColor) -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M2,16c0.1,0,8-5,9-7c0.6-1.3,1-5,1-5h3H1h7V1"/>
+                    <line x1="4" y1="8" x2="12" y2="16"/>
+                    <polygon points="15,19 21,19 23,23 18,11 13,23 "/>
+                </svg>
+            </button>
+
+            <!-- Native select kept for compatibility with existing scripts (hidden) -->
+            <select id="langSelector" class="native-select">
+                <option value="fi">Suomi (FI)</option>
+                <option value="en">English (EN)</option>
+                <option value="es">Español (ES)</option>
+                <option value="fr">Français (FR)</option>
+                <option value="ar">العربية (AR)</option>
+                <option value="nl">Nederlands (NL)</option>
+            </select>
+
+            <!-- Custom dropdown (populated/synced by JS) -->
+            <ul id="langDropdown" class="lang-dropdown" role="listbox" aria-label="Language selector"></ul>
+        </div>
     </div>
 
     <div class="container">
         <header>
-            <h1 class="main-title" data-fi="Karakov" data-en="Karakov">Karakov</h1>
+            <h1 class="main-title" data-fi="SingFin" data-en="SingFin">SingFin</h1>
             <p class="subtitle" data-fi="Opi suomea musiikin kautta" data-en="Learn Finnish through Music" data-es="Aprende finés a través de la música" data-fr="Apprenez le finnois par la musique" data-ar="تعلم الفنلندية من خلال الموسيقى" data-nl="Leer Fins door muziek">Opi suomea musiikin kautta</p>
         </header>
-
+        
         <main>
+            <section class="search-section">
+                <h2 data-fi="Etsi kappaleita" data-en="Search songs" data-es="Buscar canciones" data-fr="Rechercher des chansons" data-ar="البحث عن الأغاني" data-nl="Zoek liedjes">Etsi kappaleita</h2>
+                <input type="text" id="searchInput" class="search-input" placeholder="Hae kappaleen nimellä, artistilla..." data-fi="Hae kappaleen nimellä, artistilla..." data-en="Search by song name, artist..." data-es="Buscar por nombre de canción, artista..." data-fr="Rechercher par nom de chanson, artiste..." data-ar="البحث باسم الأغنية أو الفنان..." data-nl="Zoek op nummer, artiest...">
+            </section>
             <section class="level-selection">
                 <h2 data-fi="Valitse tasosi" data-en="Choose your level" data-es="Elige tu nivel" data-fr="Choisissez votre niveau" data-ar="اختر مستواك" data-nl="Kies je niveau">Valitse tasosi</h2>
                 <div class="level-buttons">
@@ -46,10 +66,6 @@
                 </button>
             </section>
 
-            <section class="search-section">
-                <h2 data-fi="Etsi kappaleita" data-en="Search songs" data-es="Buscar canciones" data-fr="Rechercher des chansons" data-ar="البحث عن الأغاني" data-nl="Zoek liedjes">Etsi kappaleita</h2>
-                <input type="text" id="searchInput" class="search-input" placeholder="Hae kappaleen nimellä, artistilla..." data-fi="Hae kappaleen nimellä, artistilla..." data-en="Search by song name, artist..." data-es="Buscar por nombre de canción, artista..." data-fr="Rechercher par nom de chanson, artiste..." data-ar="البحث باسم الأغنية أو الفنان..." data-nl="Zoek op nummer, artiest...">
-            </section>
 
             <section class="song-list" id="songList" style="display: none;">
                 <h2 data-fi="Valitse kappale" data-en="Choose a song" data-es="Elige una canción" data-fr="Choisissez une chanson" data-ar="اختر أغنية" data-nl="Kies een nummer">Valitse kappale</h2>
@@ -59,6 +75,7 @@
     </div>
 
     <script src="js/translations.js"></script>
+    <script src="js/lang-toggle.js"></script>
     <script src="js/songs.js"></script>
     <script src="js/app.js"></script>
 </body>
