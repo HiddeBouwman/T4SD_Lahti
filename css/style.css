@@ -649,6 +649,13 @@ h2 {
     font-size: 1rem;
 }
 
+.song-card .song-duration {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
 .song-card .level-badge {
     display: inline-block;
     padding: 8px 20px;

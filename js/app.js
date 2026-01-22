@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3>${song.title}</h3>
                 <p class="song-artist">${song.artist}</p>
                 <p class="song-year">${song.year}</p>
+                ${song.duration ? `<p class="song-duration">⏱️ ${song.duration}</p>` : ''}
                 <p class="level-badge" style="${levelColor}">${levelName}</p>
             </div>
         `;
