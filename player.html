@@ -43,13 +43,16 @@
 
     <div class="container player-container">
         <header>
-            <a href="index.html" class="back-btn" data-fi="← Takaisin" data-en="← Back" data-es="← Volver" data-fr="← Retour" data-ar="← رجوع" data-nl="← Terug">← Takaisin</a>
             <h1 id="songTitle"></h1>
             <p id="artistName"></p>
         </header>
 
         <main>
             <section class="player-section">
+                <div class="player-cover" aria-hidden="false">
+                    <img id="playerCoverImg" class="player-cover__img" alt="">
+                    <div id="playerCoverPlaceholder" class="player-cover__placeholder" aria-hidden="true">🎵</div>
+                </div>
                 <div class="audio-player">
                     <audio id="audioPlayer" controls>
                         <source id="audioSource" src="" type="audio/mpeg">

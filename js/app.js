@@ -6,6 +6,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const songList = document.getElementById('songList');
     const songsContainer = document.getElementById('songsContainer');
 
+    // When the language changes, update the difficulty labels inside existing song cards.
+    const langSelector = document.getElementById('langSelector');
+    if (langSelector) {
+        langSelector.addEventListener('change', () => {
+            // translations.changeLang runs on this same event; wait a tick so currentLang is updated.
+            setTimeout(() => {
+                updateSongCardLevelLabels();
+            }, 0);
+        });
+    }
+
     // Handle level selection
     levelButtons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -56,36 +67,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function updateSongCardLevelLabels() {
+        const badges = songsContainer.querySelectorAll('.level-badge[data-level]');
+        badges.forEach(badge => {
+            const level = badge.getAttribute('data-level');
+            if (!level) return;
+            badge.textContent = translations.getLevelName(level);
+        });
+    }
+
     // Create song card element
     function createSongCard(song) {
         const card = document.createElement('div');
-        card.className = 'song-card';
+        card.className = `song-card level-${song.level}`;
         card.onclick = () => navigateToPlayer(song.id);
 
         const levelName = translations.getLevelName(song.level);
-        
-        // Determine level badge color
-        let levelColor = '';
-        switch(song.level) {
-            case 'beginner':
-                levelColor = 'background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: white;';
-                break;
-            case 'intermediate':
-                levelColor = 'background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: white;';
-                break;
-            case 'advanced':
-                levelColor = 'background: linear-gradient(135deg, #f87171 0%, #ef4444 100%); color: white;';
-                break;
-        }
 
         card.innerHTML = `
-            ${song.cover ? `<div class="song-cover" style="background-image: url('${song.cover}');"></div>` : ''}
+            ${song.cover ? `<div class="song-cover-thumb" style="background-image: url('${song.cover}');"></div>` : `<div class="song-cover-thumb song-cover-thumb--placeholder" aria-hidden="true">🎵</div>`}
             <div class="song-info">
-                <h3>${song.title}</h3>
-                <p class="song-artist">${song.artist}</p>
-                <p class="song-year">${song.year}</p>
-                ${song.duration ? `<p class="song-duration">⏱️ ${song.duration}</p>` : ''}
-                <p class="level-badge" style="${levelColor}">${levelName}</p>
+                <div class="song-main">
+                    <h3>${song.title}</h3>
+                    <p class="song-artist">${song.artist}</p>
+                </div>
+                <div class="song-meta">
+                    <p class="song-year">${song.year}</p>
+                    ${song.duration ? `<p class="song-duration">⏱️ ${song.duration}</p>` : ''}
+                </div>
+                <p class="level-badge" data-level="${song.level}">${levelName}</p>
             </div>
         `;
 

@@ -36,10 +36,43 @@
 
 /* Audio Player Section */
 .player-section {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    border-radius: 15px;
-    padding: 30px;
+    /* Match homepage: dark glass panel instead of bright blue gradient */
+    background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+    border-radius: 18px;
+    padding: 26px;
     text-align: center;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+    backdrop-filter: blur(16px);
+}
+
+/* Album cover (above audio) */
+.player-cover {
+    width: min(220px, 70vw);
+    aspect-ratio: 1 / 1;
+    margin: 0 auto 16px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.14);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+}
+
+.player-cover__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+.player-cover__placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    font-size: 3rem;
+    color: rgba(255,255,255,0.72);
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.12), rgba(0,0,0,0.12));
 }
 
 .audio-player {
@@ -49,9 +82,36 @@
 #audioPlayer {
     width: 100%;
     max-width: 600px;
-    height: 50px;
-    border-radius: 25px;
+    border-radius: 16px;
     outline: none;
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+}
+
+/*
+   Native audio controls (Chromium/Edge/Safari):
+   Some platforms show a tinted strip (often purple) at the top of the control panel.
+   These rules normalize the controls panel/background so it matches our dark theme.
+*/
+#audioPlayer::-webkit-media-controls-panel {
+    background-color: rgba(0, 0, 0, 0.22);
+}
+
+#audioPlayer::-webkit-media-controls-enclosure {
+    border-radius: 16px;
+    background-color: transparent;
+}
+
+/* Reduce extra highlight/ink lines inside the native UI */
+#audioPlayer::-webkit-media-controls-timeline,
+#audioPlayer::-webkit-media-controls-seek-back-button,
+#audioPlayer::-webkit-media-controls-seek-forward-button,
+#audioPlayer::-webkit-media-controls-mute-button,
+#audioPlayer::-webkit-media-controls-play-button,
+#audioPlayer::-webkit-media-controls-current-time-display,
+#audioPlayer::-webkit-media-controls-time-remaining-display,
+#audioPlayer::-webkit-media-controls-volume-slider {
+    filter: none;
 }
 
 .player-info {
@@ -60,12 +120,32 @@
 
 .level-badge {
     display: inline-block;
-    background-color: var(--accent-color);
-    color: var(--text-dark);
+    /* Match homepage difficulty pill styling (no bright yellow) */
+    background: rgba(255,255,255,0.08);
+    color: var(--text-light);
     padding: 8px 20px;
     border-radius: 20px;
     font-weight: bold;
     font-size: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+}
+
+/* Difficulty badge colors (match homepage buttons/cards) */
+.level-badge[data-level="beginner"] {
+    background: linear-gradient(135deg, #C8F7C5 0%, var(--level-beginner) 100%);
+    border-color: rgba(var(--level-beginner-rgb), 0.40);
+    color: var(--text-dark);
+}
+
+.level-badge[data-level="intermediate"] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: rgba(var(--bg-mid-indigo-rgb), 0.40);
+}
+
+.level-badge[data-level="advanced"] {
+    background: linear-gradient(135deg, #2D1B3D 0%, var(--level-advanced) 100%);
+    border-color: rgba(var(--level-advanced-rgb), 0.42);
 }
 
 /* Lyrics Section */
@@ -79,7 +159,7 @@
 }
 
 .toggle-btn {
-    background-color: var(--secondary-color);
+    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
     color: var(--text-light);
     border: none;
     padding: 12px 25px;
@@ -87,23 +167,27 @@
     cursor: pointer;
     font-size: 1rem;
     transition: all 0.3s ease;
-    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.35);
 }
 
 .toggle-btn:hover {
-    background-color: var(--primary-color);
+    background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
     transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
+    box-shadow: 0 16px 36px rgba(0,0,0,0.5);
 }
 
 .lyrics-container {
-    background-color: var(--bg-light);
-    border-radius: 15px;
-    padding: 30px;
+    /* Keep good readability but match dark/glass palette */
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05));
+    border-radius: 18px;
+    padding: 28px;
     max-height: 500px;
     overflow-y: auto;
     line-height: 2;
     font-size: 1.1rem;
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.55);
 }
 
 .lyric-line {
@@ -114,17 +198,17 @@
 }
 
 .lyric-line:hover {
-    background-color: rgba(0, 120, 212, 0.1);
+    background-color: rgba(255, 255, 255, 0.06);
 }
 
 .lyric-finnish {
     font-weight: bold;
-    color: var(--primary-color);
+    color: rgba(255,255,255,0.95);
     margin-bottom: 5px;
 }
 
 .lyric-translation {
-    color: #666;
+    color: rgba(255,255,255,0.72);
     font-style: italic;
     display: none;
     direction: ltr;
@@ -146,7 +230,7 @@ body[dir="rtl"] .lyric-finnish {
 }
 
 .lyric-english {
-    color: #666;
+    color: rgba(255,255,255,0.72);
     font-style: italic;
     display: none;
 }
@@ -156,20 +240,23 @@ body[dir="rtl"] .lyric-finnish {
 }
 
 .lyrics-container.highlight-mode .lyric-line.active {
-    background-color: var(--accent-color);
+    /* No yellow; highlight with a subtle light surface */
+    background-color: rgba(255,255,255,0.12);
     transform: scale(1.02);
-    box-shadow: var(--shadow);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.45);
 }
 
 /* Instructions */
 .instructions {
-    background-color: var(--bg-light);
-    border-radius: 15px;
-    padding: 25px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05));
+    border-radius: 18px;
+    padding: 24px;
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.55);
 }
 
 .instructions h3 {
-    color: var(--primary-color);
+    color: rgba(255,255,255,0.95);
     margin-bottom: 15px;
     font-size: 1.5rem;
 }
@@ -181,7 +268,7 @@ body[dir="rtl"] .lyric-finnish {
 
 .instructions li {
     margin-bottom: 10px;
-    color: #444;
+    color: rgba(255,255,255,0.78);
 }
 
 /* Scrollbar Styling */

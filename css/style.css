@@ -250,13 +250,13 @@ body::after {
 }
 
 .lang-option:hover {
-    background: rgba(255,255,255,0.02);
+    background: rgba(255,255,255,0.2);
     transform: translateX(4px);
 }
 
 /* Selected language highlight */
 .lang-option.selected {
-    background: linear-gradient(135deg, rgba(var(--bg-mid-indigo-rgb),0.12), rgba(var(--bg-indigo-deep-rgb),0.06));
+    background: linear-gradient(135deg, rgba(var(--bg-mid-indigo-rgb),0.5), rgba(var(--bg-indigo-deep-rgb),0.1));
     color: var(--text-light);
     box-shadow: inset 4px 0 0 rgba(var(--bg-mid-indigo-rgb), 0.18);
 }
@@ -426,7 +426,7 @@ h2 {
 
 .random-btn {
     /* Match the dark theme: subtle translucent surface that blends with the waves */
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    background: linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.2));
     border: 1px solid rgba(255,255,255,0.06);
     color: var(--text-light);
     padding: 14px 28px;
@@ -500,7 +500,7 @@ h2 {
 }
 
 .random-btn {
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
     border: 1px solid rgba(255,255,255,0.06);
     color: var(--text-light);
     padding: 10px 18px;
@@ -538,48 +538,101 @@ h2 {
 }
 
 #songsContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 30px;
-    margin-top: 30px;
-    padding: 10px;
+    /* Desktop: stacked list like the reference (single column) */
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 22px;
+    padding: 6px;
 }
 
 .song-card {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
     backdrop-filter: blur(15px);
     border-radius: 20px;
-    padding: 0;
+    padding: 14px 16px;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
+    /* Reference-like accent: part of the card itself */
+    border-left-width: 8px;
     position: relative;
     overflow: hidden;
+
+    /* New: horizontal list-card layout */
+    display: flex;
+    align-items: center;
+    gap: 14px;
 }
 
-.song-cover {
-    width: 100%;
-    height: 200px;
+/* Card difficulty accent (left border) */
+.song-card.level-beginner {
+    border-left-color: var(--level-beginner);
+}
+
+.song-card.level-intermediate {
+    /* Matches the intermediate button */
+    border-left-color: #667eea;
+}
+
+.song-card.level-advanced {
+    border-left-color: var(--level-advanced);
+}
+
+/* Add a subtle glow that reads like a "stripe" but stays part of the card */
+.song-card.level-beginner,
+.song-card.level-intermediate,
+.song-card.level-advanced {
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        -10px 0 26px rgba(0,0,0,0.08);
+}
+
+/* Small left thumbnail */
+.song-cover-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
     background-size: cover;
     background-position: center;
-    border-radius: 20px 20px 0 0;
-    position: relative;
-    overflow: hidden;
+    flex: 0 0 64px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+    border: 1px solid rgba(255,255,255,0.4);
 }
 
-.song-cover::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3));
+.song-cover-thumb--placeholder {
+    display: grid;
+    place-items: center;
+    background: rgba(0,0,0,0.06);
+    color: rgba(0,0,0,0.55);
+    font-size: 1.1rem;
 }
 
 .song-info {
-    padding: 30px;
+    padding: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 14px;
+    row-gap: 6px;
+}
+
+.song-info .song-main {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+}
+
+.song-info .song-meta {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
 }
 
 .song-card::before {
@@ -589,10 +642,23 @@ h2 {
     left: 0;
     width: 100%;
     height: 5px;
-    background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+    /* Solid bar; per-level overrides below */
+    background: var(--level-beginner);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.4s ease-in-out;
+}
+
+.song-card.level-beginner::before {
+    background: var(--level-beginner);
+}
+
+.song-card.level-intermediate::before {
+    background: #667eea;
+}
+
+.song-card.level-advanced::before {
+    background: var(--level-advanced);
 }
 
 .song-card:hover::before {
@@ -602,7 +668,6 @@ h2 {
 .song-card:hover {
     transform: translateY(-2px) scale(1.01);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    border-color: var(--accent-color);
 }
 
 .song-card:active {
@@ -611,17 +676,20 @@ h2 {
 
 .song-card h3 {
     color: var(--primary-color);
-    font-size: 1.5rem;
+    font-size: 1.15rem;
     font-weight: 700;
-    margin-bottom: 15px;
+    margin-bottom: 4px;
     line-height: 1.3;
     letter-spacing: -0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .song-card p {
     color: #666;
-    font-size: 1rem;
-    margin-bottom: 8px;
+    font-size: 0.95rem;
+    margin-bottom: 0;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -630,12 +698,40 @@ h2 {
 .song-card .song-artist {
     font-weight: 600;
     color: #444;
-    font-size: 1.05rem;
+    font-size: 0.98rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .song-card .song-artist::before {
     content: '🎤';
     font-size: 1.1rem;
+}
+
+/* Move the level badge to the right like a pill */
+.song-card .level-badge {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    justify-self: end;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* Tighten spacing on small screens */
+@media (max-width: 480px) {
+    .song-cover-thumb {
+        width: 54px;
+        height: 54px;
+        flex-basis: 54px;
+        border-radius: 14px;
+    }
+
+    .song-card {
+        padding: 12px 12px;
+        gap: 12px;
+    }
 }
 
 .song-card .song-year {
@@ -669,12 +765,20 @@ h2 {
     transition: all 0.1s ease-in-out;
 }
 
-.song-card .level-badge[data-level="beginner"],
-.song-card .level-badge:contains("Beginner"),
-.song-card .level-badge:contains("Principiante"),
-.song-card .level-badge:contains("Débutant") {
-    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-    color: white;
+/* Level badge colors should correlate with the level buttons */
+.song-card .level-badge[data-level="beginner"] {
+    background: linear-gradient(135deg, #C8F7C5 0%, var(--level-beginner) 100%);
+    color: var(--text-dark);
+}
+
+.song-card .level-badge[data-level="intermediate"] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: var(--text-light);
+}
+
+.song-card .level-badge[data-level="advanced"] {
+    background: linear-gradient(135deg, #2D1B3D 0%, var(--level-advanced) 100%);
+    color: var(--text-light);
 }
 
 .song-card:hover .level-badge {
@@ -706,7 +810,8 @@ h2 {
     }
 
     #songsContainer {
-        grid-template-columns: 1fr;
+        /* keep stacked list on mobile too */
+        gap: 14px;
     }
 }
 

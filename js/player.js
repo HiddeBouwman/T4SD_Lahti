@@ -38,9 +38,29 @@ function initializePlayer(song) {
     // Set song info
     document.getElementById('songTitle').textContent = song.title;
     document.getElementById('artistName').textContent = song.artist;
+
+    // Album cover above the audio player
+    const coverImg = document.getElementById('playerCoverImg');
+    const coverPlaceholder = document.getElementById('playerCoverPlaceholder');
+    if (coverImg && coverPlaceholder) {
+        const hasCover = Boolean(song.cover);
+        if (hasCover) {
+            coverImg.src = song.cover;
+            coverImg.alt = `${song.title} — ${song.artist}`;
+            coverImg.style.display = 'block';
+            coverPlaceholder.style.display = 'none';
+        } else {
+            coverImg.removeAttribute('src');
+            coverImg.alt = '';
+            coverImg.style.display = 'none';
+            coverPlaceholder.style.display = 'grid';
+        }
+    }
     
     const levelBadge = document.getElementById('levelBadge');
     levelBadge.textContent = translations.getLevelName(song.level);
+    // Allow CSS to theme the difficulty badge consistently with the homepage.
+    levelBadge.setAttribute('data-level', song.level);
 
     // Set audio source
     const audioPlayer = document.getElementById('audioPlayer');
