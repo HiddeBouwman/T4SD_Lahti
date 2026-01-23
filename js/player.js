@@ -6,6 +6,92 @@ let dailyQuizShown = false;
 // (e.g. when changing language, we rebuild the lyrics DOM).
 let showTranslations = false;
 
+// Spotify-like auto-scrolling lyrics.
+// - autoScrollSuppressedUntil: timestamp (ms) until which we won't auto-scroll
+//   after the user scrolls manually (so we don't fight them).
+let autoScrollSuppressedUntil = 0;
+let lastAutoScrollLineIndex = -1;
+let lastAutoScrollAt = 0;
+
+function prefersReducedMotion() {
+    try {
+        return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch {
+        return false;
+    }
+}
+
+function suppressAutoScrollFor(ms) {
+    autoScrollSuppressedUntil = Date.now() + ms;
+}
+
+function shouldAutoScrollNow() {
+    if (prefersReducedMotion()) return false;
+    if (Date.now() < autoScrollSuppressedUntil) return false;
+    return true;
+}
+
+function maybeAutoScrollToLine(lyricsContainer, lyricLineEl, lineIndex) {
+    if (!lyricsContainer || !lyricLineEl) return;
+    if (!shouldAutoScrollNow()) return;
+
+    // Avoid excessive work on every timeupdate.
+    if (lineIndex === lastAutoScrollLineIndex) return;
+    const now = Date.now();
+    if (now - lastAutoScrollAt < 150) return;
+    lastAutoScrollAt = now;
+    lastAutoScrollLineIndex = lineIndex;
+
+    // Keep the active line roughly centered, like Spotify.
+    const containerRect = lyricsContainer.getBoundingClientRect();
+    const lineRect = lyricLineEl.getBoundingClientRect();
+    const currentScrollTop = lyricsContainer.scrollTop;
+
+    // Distance from top of container scroll area to the line.
+    const lineTopWithin = (lineRect.top - containerRect.top) + currentScrollTop;
+    const targetScrollTop = lineTopWithin - (lyricsContainer.clientHeight / 2) + (lyricLineEl.clientHeight / 2);
+
+    // Clamp.
+    const maxScroll = lyricsContainer.scrollHeight - lyricsContainer.clientHeight;
+    const clamped = Math.max(0, Math.min(maxScroll, targetScrollTop));
+
+    // Smoothly scroll the container (not the page).
+    try {
+        lyricsContainer.scrollTo({ top: clamped, behavior: 'smooth' });
+    } catch {
+        lyricsContainer.scrollTop = clamped;
+    }
+}
+
+function setupAutoScrollUserInterruption() {
+    const lyricsContainer = document.getElementById('lyricsContainer');
+    if (!lyricsContainer) return;
+
+    // Any manual interaction should pause auto-scroll for a bit.
+    const suppress = () => suppressAutoScrollFor(2500);
+
+    lyricsContainer.addEventListener('wheel', suppress, { passive: true });
+    lyricsContainer.addEventListener('touchstart', suppress, { passive: true });
+    lyricsContainer.addEventListener('pointerdown', suppress, { passive: true });
+
+    // When users use keyboard scrolling while focused inside.
+    lyricsContainer.addEventListener('keydown', (e) => {
+        const keys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '];
+        if (keys.includes(e.key)) suppress();
+    });
+}
+
+function forceSyncNow(audioPlayer) {
+    if (!audioPlayer) return;
+    // Trigger the same code path as normal playback updates.
+    // (Some browsers won't fire timeupdate immediately after DOM updates.)
+    try {
+        audioPlayer.dispatchEvent(new Event('timeupdate'));
+    } catch {
+        // ignore
+    }
+}
+
 const DAILY_LS = {
     completedDate: 'dailyChallenge.completedDate',
     streak: 'dailyChallenge.streak',
@@ -513,6 +599,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                             if (fullSong) {
                                 currentSong = fullSong;
                                 displayLyrics(currentSong.lyrics);
+
+                                // If audio is currently playing, rebind sync + force a tick so
+                                // highlighting and auto-scroll continue from the current timestamp.
+                                const audioPlayer = document.getElementById('audioPlayer');
+                                if (audioPlayer && Array.isArray(currentSong.lyrics)) {
+                                    setupAudioSync(audioPlayer, currentSong.lyrics);
+                                    forceSyncNow(audioPlayer);
+                                }
                             }
                         });
                 }
@@ -585,6 +679,9 @@ async function initializePlayer(song) {
 
     // Setup translation toggle
     setupTranslationToggle();
+
+    // Auto-scroll is always enabled (lyrics follow along like Spotify)
+    setupAutoScrollUserInterruption();
 
     // Audio sync is now initialized only when lyrics are present.
 }
@@ -692,7 +789,20 @@ function setupAudioSync(audioPlayer, lyrics) {
     // Check if lyrics have custom timestamps
     const hasCustomTime = lyrics[0].time !== undefined;
 
-    audioPlayer.addEventListener('timeupdate', () => {
+    // If we re-render lyrics (e.g. language change), we must rebind listeners
+    // to the new lyric DOM nodes. Avoid stacking multiple listeners.
+    try {
+        if (audioPlayer._syncHandlers) {
+            const h = audioPlayer._syncHandlers;
+            if (h.timeupdate) audioPlayer.removeEventListener('timeupdate', h.timeupdate);
+            if (h.pause) audioPlayer.removeEventListener('pause', h.pause);
+            if (h.ended) audioPlayer.removeEventListener('ended', h.ended);
+        }
+    } catch {
+        // ignore
+    }
+
+    const onTimeUpdate = () => {
         const currentTime = audioPlayer.currentTime;
         let currentLineIndex = -1;
 
@@ -717,21 +827,39 @@ function setupAudioSync(audioPlayer, lyrics) {
         if (lyricLines[currentLineIndex]) {
             lyricLines[currentLineIndex].classList.add('active');
             lyricsContainer.classList.add('highlight-mode');
+
+            // Auto-scroll the lyrics container to keep the active line in view.
+            maybeAutoScrollToLine(lyricsContainer, lyricLines[currentLineIndex], currentLineIndex);
         }
-    });
+    };
 
-    audioPlayer.addEventListener('pause', () => {
+    const onPause = () => {
         lyricsContainer.classList.remove('highlight-mode');
         lyricLines.forEach(line => line.classList.remove('active'));
-    });
 
-    audioPlayer.addEventListener('ended', () => {
+        // When paused, don't keep forcing the scroll position.
+        lastAutoScrollLineIndex = -1;
+    };
+
+    const onEnded = () => {
         lyricsContainer.classList.remove('highlight-mode');
         lyricLines.forEach(line => line.classList.remove('active'));
+
+        lastAutoScrollLineIndex = -1;
 
         // Daily challenge: show quiz when song ends.
         if (isDailyMode && !dailyQuizShown && currentSong) {
             openDailyQuizNow();
         }
-    });
+    };
+
+    audioPlayer.addEventListener('timeupdate', onTimeUpdate);
+    audioPlayer.addEventListener('pause', onPause);
+    audioPlayer.addEventListener('ended', onEnded);
+
+    try {
+        audioPlayer._syncHandlers = { timeupdate: onTimeUpdate, pause: onPause, ended: onEnded };
+    } catch {
+        // ignore
+    }
 }

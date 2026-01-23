@@ -25,7 +25,7 @@
             duration: "2:49",
             level: "beginner",
             cover: "https://cdnaws.recis.io/i/img/02/3f/c6/33_f88f88_sq250.jpg",
-            audioUrl: "https://www.bensound.com/bensound-music/bensound-littleidea.mp3"
+            audioUrl: "assets/audio/SataSalamaa.mp3"
         },
         {
             id: 3,
