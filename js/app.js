@@ -1,5 +1,63 @@
 // Main app logic
 document.addEventListener('DOMContentLoaded', () => {
+    // Homepage tab-like navigation (Daily Challenge vs Search/Browse)
+    const tabDaily = document.getElementById('tabDaily');
+    const tabSearch = document.getElementById('tabSearch');
+    const dailySection = document.getElementById('dailyChallenge');
+    const searchSection = document.getElementById('searchSection');
+    const levelSection = document.getElementById('levelSection');
+
+    function setActiveTab(which, opts = { scroll: true }) {
+        const isDaily = which === 'daily';
+
+        if (tabDaily) {
+            tabDaily.classList.toggle('is-active', isDaily);
+            tabDaily.setAttribute('aria-selected', isDaily ? 'true' : 'false');
+        }
+        if (tabSearch) {
+            tabSearch.classList.toggle('is-active', !isDaily);
+            tabSearch.setAttribute('aria-selected', !isDaily ? 'true' : 'false');
+        }
+
+        if (dailySection) dailySection.hidden = !isDaily;
+        if (searchSection) searchSection.hidden = isDaily;
+        if (levelSection) levelSection.hidden = isDaily;
+
+        // Song list remains controlled by existing logic; just ensure it can't show on Daily tab.
+        const songListEl = document.getElementById('songList');
+        if (songListEl) {
+            if (isDaily) {
+                // Hard-hide so it can't visually linger even if other logic set display:block.
+                songListEl.hidden = true;
+                songListEl.style.display = 'none';
+            } else {
+                // Keep whatever display state the search logic wants.
+                // If search logic has display:block, show it; otherwise keep hidden.
+                songListEl.hidden = songListEl.style.display === 'none';
+            }
+        }
+
+        try {
+            localStorage.setItem('home.activeTab', which);
+        } catch {
+            // ignore
+        }
+
+        if (opts && opts.scroll) {
+            const target = isDaily ? dailySection : searchSection;
+            if (target && target.scrollIntoView) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    }
+
+    if (tabDaily) {
+        tabDaily.addEventListener('click', () => setActiveTab('daily'));
+    }
+    if (tabSearch) {
+        tabSearch.addEventListener('click', () => setActiveTab('search'));
+    }
+
     const levelButtons = document.querySelectorAll('.level-btn');
     const randomBtn = document.getElementById('randomBtn');
     const searchInput = document.getElementById('searchInput');
@@ -20,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle level selection
     levelButtons.forEach(btn => {
         btn.addEventListener('click', () => {
+            if (tabSearch && tabDaily) setActiveTab('search', { scroll: false });
             const level = btn.dataset.level;
             showSongsByLevel(level);
         });
@@ -27,20 +86,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle random song selection
     randomBtn.addEventListener('click', () => {
+        if (tabSearch && tabDaily) setActiveTab('search', { scroll: false });
         const randomSong = getRandomSong();
         navigateToPlayer(randomSong.id);
     });
 
     // Handle search input
     searchInput.addEventListener('input', (e) => {
+        if (tabSearch && tabDaily) setActiveTab('search', { scroll: false });
         const query = e.target.value.trim();
         const songs = searchSongs(query);
         displaySongs(songs);
         if (query && songs.length > 0) {
             songList.style.display = 'block';
+            songList.hidden = false;
             songList.scrollIntoView({ behavior: 'smooth' });
         } else if (!query) {
             songList.style.display = 'none';
+            songList.hidden = true;
         }
     });
 
@@ -49,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const songs = getSongsByLevel(level);
         displaySongs(songs);
         songList.style.display = 'block';
+        songList.hidden = false;
         songList.scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -66,6 +130,26 @@ document.addEventListener('DOMContentLoaded', () => {
             songsContainer.appendChild(songCard);
         });
     }
+
+    // Initial tab selection:
+    // - If there is already a search query or a visible song list, start on Search.
+    // - Else restore last tab from localStorage, default Daily.
+    (function initTabs() {
+        if (!tabDaily || !tabSearch) return;
+        let initial = 'daily';
+        try {
+            const saved = localStorage.getItem('home.activeTab');
+            if (saved === 'search' || saved === 'daily') initial = saved;
+        } catch {
+            // ignore
+        }
+
+        const hasQuery = Boolean(searchInput && searchInput.value && searchInput.value.trim().length > 0);
+        const songListVisible = Boolean(songList && songList.style.display !== 'none');
+        if (hasQuery || songListVisible) initial = 'search';
+
+        setActiveTab(initial, { scroll: false });
+    })();
 
     function updateSongCardLevelLabels() {
         const badges = songsContainer.querySelectorAll('.level-badge[data-level]');

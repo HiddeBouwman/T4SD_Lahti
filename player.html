@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karakov Player</title>
+    <title>SingFin - Opi suomea musiikin kautta / Learn Finnish through Music</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/player.css">
 </head>
@@ -43,14 +43,14 @@
 
     <div class="container player-container">
         <header>
-            <h1 id="songTitle"></h1>
-            <p id="artistName"></p>
+            <h1 style="font-weight: 900; font-size: xx-large;" id="songTitle"></h1>
+            <p style="font-weight: 700; font-size: large;"  id="artistName"></p>
         </header>
 
         <main>
             <section class="player-section">
                 <div class="player-cover" aria-hidden="false">
-                    <img id="playerCoverImg" class="player-cover__img" alt="">
+                    <img id="playerCoverImg" class="player-cover__img" alt="" width="220" height="220" decoding="async" fetchpriority="high">
                     <div id="playerCoverPlaceholder" class="player-cover__placeholder" aria-hidden="true">🎵</div>
                 </div>
                 <div class="audio-player">
@@ -61,7 +61,12 @@
                 </div>
 
                 <div class="player-info">
-                    <p class="level-badge" id="levelBadge"></p>
+                    <div class="player-info__row">
+                        <p class="level-badge" id="levelBadge"></p>
+                        <button id="dailyQuizJumpBtn" class="toggle-btn daily-quiz-jump" type="button" style="display:none;">
+                            <span data-fi="Siirry kysymyksiin" data-en="Go to questions" data-es="Ir a las preguntas" data-fr="Aller aux questions" data-ar="اذهب إلى الأسئلة" data-nl="Ga naar vragen">Siirry kysymyksiin</span>
+                        </button>
+                    </div>
                 </div>
             </section>
 
@@ -89,9 +94,31 @@
         </main>
     </div>
 
-    <script src="js/translations.js"></script>
-    <script src="js/lang-toggle.js"></script>
-    <script src="js/songs.js"></script>
-    <script src="js/player.js"></script>
+    <!-- Daily Challenge quiz modal (shown when a Daily Challenge song ends) -->
+    <div id="dailyQuizModal" class="daily-quiz" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Daily Challenge quiz">
+        <div class="daily-quiz__backdrop" data-close="1"></div>
+        <div class="daily-quiz__panel" role="document">
+            <div class="daily-quiz__header">
+                <h2 class="daily-quiz__title" data-fi="Päivän haaste: Pikavisa" data-en="Daily Challenge: Quick quiz" data-es="Desafío diario: Quiz rápido" data-fr="Défi du jour : Quiz rapide" data-ar="تحدي اليوم: اختبار سريع" data-nl="Dagelijkse uitdaging: Snelle quiz">Päivän haaste: Pikavisa</h2>
+                <button id="dailyQuizClose" class="daily-quiz__close" type="button" aria-label="Close" data-close="1">×</button>
+            </div>
+            <p class="daily-quiz__subtitle" data-fi="Valitse oikea käännös (3 kysymystä)" data-en="Pick the correct translation (3 questions)" data-es="Elige la traducción correcta (3 preguntas)" data-fr="Choisissez la bonne traduction (3 questions)" data-ar="اختر الترجمة الصحيحة (3 أسئلة)" data-nl="Kies de juiste vertaling (3 vragen)">Valitse oikea käännös (3 kysymystä)</p>
+
+            <form id="dailyQuizForm" class="daily-quiz__form"></form>
+
+            <div class="daily-quiz__footer">
+                <div id="dailyQuizResult" class="daily-quiz__result" aria-live="polite"></div>
+                <button id="dailyQuizSubmit" class="toggle-btn" type="button">
+                    <span data-fi="Valmis" data-en="Submit" data-es="Enviar" data-fr="Valider" data-ar="إرسال" data-nl="Inleveren">Valmis</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="js/translations.js"></script>
+    <script defer src="js/lang-toggle.js"></script>
+    <script defer src="js/songs-index.js"></script>
+    <script defer src="js/song-loader.js"></script>
+    <script defer src="js/player.js"></script>
 </body>
 </html>

@@ -50,12 +50,48 @@
 
     <div class="container">
         <header>
-            <h1 class="main-title" data-fi="SingFin" data-en="SingFin">SingFin</h1>
-            <p class="subtitle" data-fi="Opi suomea musiikin kautta" data-en="Learn Finnish through Music" data-es="Aprende finés a través de la música" data-fr="Apprenez le finnois par la musique" data-ar="تعلم الفنلندية من خلال الموسيقى" data-nl="Leer Fins door muziek">Opi suomea musiikin kautta</p>
+            <h1 class="main-title">
+                <img
+                    class="site-logo"
+                    src="assets/artwork/Karaoke_logo_white.svg"
+                    alt="SingFin"
+                    loading="eager"
+                    decoding="async"
+                />
+            </h1>
+            <p style="color: #a1e8af; font-size: x-large; font-weight: 800;" class="subtitle" data-fi="Opi suomea musiikin kautta" data-en="Learn Finnish through Music" data-es="Aprende finés a través de la música" data-fr="Apprenez le finnois par la musique" data-ar="تعلم الفنلندية من خلال الموسيقى" data-nl="Leer Fins door muziek">Opi suomea musiikin kautta</p>
         </header>
-        
+        <div class="home-tabs" role="tablist" aria-label="Main sections">
+            <button id="tabSearch" class="home-tab" type="button" role="tab" aria-selected="false" aria-controls="searchSection" data-target="searchSection">
+                <span data-fi="Etsi kappaleita" data-en="Search songs" data-es="Buscar canciones" data-fr="Rechercher des chansons" data-ar="البحث عن الأغاني" data-nl="Zoek liedjes">Etsi kappaleita</span>
+            </button>
+            <button id="tabDaily" class="home-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="dailyChallenge" data-target="dailyChallenge">
+                <span data-fi="Päivän haaste" data-en="Daily Challenge" data-es="Desafío diario" data-fr="Défi du jour" data-ar="تحدي اليوم" data-nl="Dagelijkse uitdaging">Päivän haaste</span>
+            </button>
+        </div>
         <main>
-            <section class="search-section">
+
+            <section class="daily-challenge" id="dailyChallenge">
+                <h2 data-fi="Päivän haaste" data-en="Daily Challenge" data-es="Desafío diario" data-fr="Défi du jour" data-ar="تحدي اليوم" data-nl="Dagelijkse uitdaging">Päivän haaste</h2>
+                <div class="daily-card" role="region" aria-label="Daily Challenge">
+                    <div class="daily-card__meta">
+                        <p class="daily-card__title" id="dailyChallengeTitle">–</p>
+                        <p class="daily-card__subtitle" id="dailyChallengeArtist">–</p>
+                        <p class="daily-card__level" id="dailyChallengeLevel">–</p>
+                        <p class="daily-card__status" id="dailyChallengeStatus"> </p>
+                    </div>
+                    <div class="daily-card__actions">
+                        <button id="dailyChallengeBtn" class="random-btn" type="button">
+                            <span data-fi="Aloita haaste" data-en="Start challenge" data-es="Iniciar desafío" data-fr="Démarrer le défi" data-ar="ابدأ التحدي" data-nl="Start uitdaging">Aloita haaste</span>
+                        </button>
+                        <button id="dailyChallengeReviewBtn" class="random-btn daily-review-btn" type="button" style="display:none;">
+                            <span data-fi="Katso vastaukset" data-en="Review answers" data-es="Revisar respuestas" data-fr="Revoir les réponses" data-ar="راجع الإجابات" data-nl="Bekijk antwoorden">Katso vastaukset</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="search-section" id="searchSection" hidden>
                 <h2 data-fi="Etsi kappaleita" data-en="Search songs" data-es="Buscar canciones" data-fr="Rechercher des chansons" data-ar="البحث عن الأغاني" data-nl="Zoek liedjes">Etsi kappaleita</h2>
                 <div class="search-row">
                     <div class="search-field">
@@ -67,11 +103,18 @@
                         <input type="search" id="searchInput" class="search-input" placeholder="Hae kappaletta tai artistia..." data-fi="Hae kappaleen nimellä, artistilla..." data-en="Search by song name, artist..." data-es="Buscar por nombre de canción, artista..." data-fr="Rechercher par nom de chanson, artiste..." data-ar="البحث باسم الأغنية أو الفنان..." data-nl="Zoek op nummer, artiest...">
                     </div>
                     <button id="randomBtn" class="random-btn">
-                        <span data-fi="Satunnainen kappale" data-en="Random Song">Satunnainen kappale</span>
+                        <span
+                            data-fi="Satunnainen kappale"
+                            data-en="Random Song"
+                            data-es="Canción aleatoria"
+                            data-fr="Chanson aléatoire"
+                            data-ar="أغنية عشوائية"
+                            data-nl="Willekeurig nummer"
+                        >Satunnainen kappale</span>
                     </button>
                 </div>
             </section>
-            <section class="level-selection">
+            <section class="level-selection" id="levelSection" hidden>
                 <h2 data-fi="Valitse tasosi" data-en="Choose your level" data-es="Elige tu nivel" data-fr="Choisissez votre niveau" data-ar="اختر مستواك" data-nl="Kies je niveau">Valitse tasosi</h2>
                 <div class="level-buttons">
                     <button class="level-btn" data-level="beginner">
@@ -89,16 +132,17 @@
             <!-- random button now lives next to the search input -->
 
 
-            <section class="song-list" id="songList" style="display: none;">
+            <section class="song-list" id="songList" style="display: none;" hidden>
                 <h2 data-fi="Valitse kappale" data-en="Choose a song" data-es="Elige una canción" data-fr="Choisissez une chanson" data-ar="اختر أغنية" data-nl="Kies een nummer">Valitse kappale</h2>
                 <div id="songsContainer"></div>
             </section>
         </main>
     </div>
 
-    <script src="js/translations.js"></script>
-    <script src="js/lang-toggle.js"></script>
-    <script src="js/songs.js"></script>
-    <script src="js/app.js"></script>
+    <script defer src="js/translations.js"></script>
+    <script defer src="js/lang-toggle.js"></script>
+    <script defer src="js/songs.js"></script>
+    <script defer src="js/daily-challenge.js"></script>
+    <script defer src="js/app.js"></script>
 </body>
 </html>

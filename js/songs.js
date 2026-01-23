@@ -660,3 +660,20 @@ function searchSongs(query) {
         song.year.toString().includes(lowerQuery)
     );
 }
+
+// Make the database accessible to other scripts that expect a global.
+// (In non-module scripts this is usually already global, but this makes it explicit and robust.)
+try {
+    window.songsDatabase = songsDatabase;
+    // Backwards-compat aliases (some scripts look for these names)
+    window.songs = window.songsDatabase;
+    window.SONGS = window.songsDatabase;
+    window.getAllSongs = getAllSongs;
+    window.getSongsByLevel = getSongsByLevel;
+    window.getRandomSong = getRandomSong;
+    window.getSongById = getSongById;
+    window.getRandomSongByLevel = getRandomSongByLevel;
+    window.searchSongs = searchSongs;
+} catch {
+    // ignore (e.g., if window is not available)
+}

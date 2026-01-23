@@ -77,11 +77,16 @@
 
 .audio-player {
     margin-bottom: 20px;
+    /* Prevent native controls from causing layout shifts during load */
+    min-height: 64px;
+    contain: layout paint;
 }
 
 #audioPlayer {
     width: 100%;
     max-width: 600px;
+    /* Reserve space early; native controls can change height after metadata loads */
+    height: 54px;
     border-radius: 16px;
     outline: none;
     background: rgba(255, 255, 255, 0.3);
@@ -116,6 +121,24 @@
 
 .player-info {
     color: var(--text-light);
+}
+
+.player-info__row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* "Questions" button next to difficulty badge (daily mode only) */
+.daily-quiz-jump {
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.35);
 }
 
 .level-badge {
@@ -194,7 +217,10 @@
     margin-bottom: 20px;
     padding: 10px;
     border-radius: 8px;
-    transition: all 0.3s ease;
+    /* Avoid transitioning expensive properties (like box-shadow) */
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    position: relative;
+    will-change: transform;
 }
 
 .lyric-line:hover {
@@ -243,7 +269,16 @@ body[dir="rtl"] .lyric-finnish {
     /* No yellow; highlight with a subtle light surface */
     background-color: rgba(255,255,255,0.12);
     transform: scale(1.02);
+}
+
+/* Subtle glow as a separate layer (less paint churn than animating box-shadow directly) */
+.lyrics-container.highlight-mode .lyric-line.active::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
     box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+    pointer-events: none;
 }
 
 /* Instructions */
@@ -269,6 +304,188 @@ body[dir="rtl"] .lyric-finnish {
 .instructions li {
     margin-bottom: 10px;
     color: rgba(255,255,255,0.78);
+}
+
+/* Daily quiz modal */
+.daily-quiz {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 2000;
+}
+
+.daily-quiz.open {
+    display: grid;
+    place-items: center;
+}
+
+.daily-quiz__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.62);
+    backdrop-filter: blur(6px);
+}
+
+.daily-quiz__panel {
+    position: relative;
+    width: min(760px, calc(100vw - 30px));
+    max-height: min(80vh, 720px);
+    overflow: auto;
+    border-radius: 18px;
+    padding: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0.25));
+    box-shadow: 0 18px 55px rgba(0,0,0,0.65);
+}
+
+.daily-quiz__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.daily-quiz__title {
+    margin: 0;
+    font-size: 1.35rem;
+}
+
+.daily-quiz__close {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(var(--bg-slate-rgb), 0.10);
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+}
+
+.daily-quiz__close:hover {
+    transform: translateY(-2px);
+    background: rgba(var(--bg-slate-rgb), 0.14);
+    box-shadow: 0 16px 36px rgba(0,0,0,0.55);
+}
+
+.daily-quiz__subtitle {
+    margin: 10px 0 14px;
+    opacity: 0.88;
+}
+
+.daily-quiz__form {
+    display: grid;
+    gap: 14px;
+}
+
+.daily-quiz__q {
+    border-radius: 14px;
+    padding: 14px;
+    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(0,0,0,0.16);
+}
+
+/* Quiz feedback states (applied after submit) */
+.daily-quiz__opt.is-correct {
+    background: rgba(72, 187, 120, 0.4); /* green */
+    border-color: rgba(72, 187, 120, 0.60);
+    box-shadow: 0 10px 28px rgba(72, 187, 120, 0.15);
+}
+
+.daily-quiz__opt.is-incorrect {
+    background: rgba(245, 101, 101, 0.4); /* red */
+    border-color: rgba(245, 101, 101, 0.62);
+    box-shadow: 0 10px 28px rgba(245, 101, 101, 0.12);
+}
+
+/* Always highlight the correct answer so users can learn */
+.daily-quiz__opt.is-correct-answer {
+    border-width: 2px;
+    border-color: rgba(99, 179, 237, 1); /* bright blue */
+    box-shadow:
+        0 0 0 3px rgba(18, 151, 195, 0.5),
+        0 12px 30px rgba(99, 179, 237, 0.12);
+}
+
+/* If the selected answer is correct, avoid stacking the blue border on top */
+.daily-quiz__opt.is-correct.is-correct-answer {
+    border-width: 1px;
+    border-color: rgba(72, 187, 120, 0.60);
+    box-shadow: 0 10px 28px rgba(72, 187, 120, 0.15);
+}
+
+.daily-quiz__q-title {
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.daily-quiz__options {
+    display: grid;
+    gap: 10px;
+}
+
+.daily-quiz__opt {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.06);
+    cursor: pointer;
+}
+
+/* When graded, we hide radio controls and show ✓/✕ marks instead */
+.daily-quiz__form.is-graded .daily-quiz__opt input {
+    display: none;
+}
+
+.daily-quiz__mark {
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    border-radius: 999px;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 22px;
+    font-weight: 900;
+    font-size: 0.95rem;
+    line-height: 1;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(0,0,0,0.18);
+    color: rgba(255,255,255,0.85);
+}
+
+.daily-quiz__opt.is-correct-answer .daily-quiz__mark {
+    border-color: rgba(99, 179, 237, 0.95);
+    background: rgba(99, 179, 237, 0.18);
+    color: rgba(255,255,255,0.98);
+}
+
+.daily-quiz__opt.is-incorrect .daily-quiz__mark {
+    border-color: rgba(245, 101, 101, 0.85);
+    background: rgba(245, 101, 101, 0.18);
+    color: rgba(255,255,255,0.98);
+}
+
+.daily-quiz__opt input {
+    margin-top: 3px;
+}
+
+.daily-quiz__footer {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.daily-quiz__result {
+    font-weight: 800;
+    width: 100%;
+    text-align: center;
 }
 
 /* Scrollbar Styling */
